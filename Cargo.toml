@@ -54,7 +54,10 @@ sqlx = { version = "0.8", default-features = false, features = ["sqlite", "runti
 object_store = { version = "0.14", features = ["aws"] }
 
 # auth
-jsonwebtoken = "9"
+# 10.x moved crypto behind a provider feature; with none enabled every
+# sign/verify panics at run time. `aws_lc_rs` keeps the ring-equivalent
+# primitives 9.x used, and aws-lc-rs is already linked through rustls.
+jsonwebtoken = { version = "10", features = ["aws_lc_rs"] }
 argon2 = "0.5"
 rand_core = { version = "0.6", features = ["getrandom"] }
 # RSA keypair generation + PKCS#1/PKCS#8 ser/de for RS256 JWTs.
