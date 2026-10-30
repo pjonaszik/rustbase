@@ -2238,8 +2238,10 @@ mod tests {
                 r#"
                 $app.onRecordAfterCreate("notes", () => {
                     // Force a large allocation; the runtime must reject it.
-                    let s = "x";
-                    for (let i = 0; i < 23; i++) s = s + s; // ~8 MiB
+                    // `repeat` builds a flat 8 MiB string in one allocation
+                    // (repeated `s + s` may be stored as a rope and never
+                    // materialise the full buffer).
+                    const s = "x".repeat(1 << 23); // 8 MiB
                     $app.log("unexpected: " + s.length);
                 });
                 "#,
